@@ -6,6 +6,7 @@ const $messageFormButton = $messageForm.querySelector('button')
 const $sendLocationButton = document.querySelector('#send-location')
 const $messages = document.querySelector('#messages')
 
+
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationMessageTemplate = document.querySelector('#location-message-template').innerHTML
 
@@ -41,6 +42,10 @@ $messageFormButton.setAttribute('disabled', 'disabled')
         $messageFormInput.value = ''
         $messageFormInput.focus()
 
+        if (error) {
+            return console.log(error)
+        }
+
         console.log('The message has been delivered!')
     })
 })
@@ -65,4 +70,9 @@ $sendLocationButton.addEventListener('click', () => {
     })
 })
 
-socket.emit('join', { username, room })
+socket.emit('join', { username, room }, (error) => {
+    if (error) {
+        alert(error)
+        location.href = '/'
+    }
+})
