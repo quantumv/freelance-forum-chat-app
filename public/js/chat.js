@@ -6,7 +6,6 @@ const $messageFormButton = $messageForm.querySelector('button')
 const $sendLocationButton = document.querySelector('#send-location')
 const $messages = document.querySelector('#messages')
 
-
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationMessageTemplate = document.querySelector('#location-message-template').innerHTML
 
@@ -16,7 +15,7 @@ socket.on('message', (message) => {
     console.log(message)
     const html = Mustache.render(messageTemplate, {
         message: message.text,
-        createdAt:moment(message.createdAt).format('h:mm a')
+        createdAt: moment(message.createdAt).format('h:mm a')
     })
     $messages.insertAdjacentHTML('beforeend', html)
 })
@@ -25,7 +24,7 @@ socket.on('locationMessage', (message) => {
     console.log(message)
     const html = Mustache.render(locationMessageTemplate, {
         url: message.url,
-        createdAt: moment(message.createdAt).format('h:mm p')
+        createdAt: moment(message.createdAt).format('h:mm a')
     })
     $messages.insertAdjacentHTML('beforeend', html)
 })
@@ -35,7 +34,8 @@ $messageForm.addEventListener('submit', (e) => {
 
 $messageFormButton.setAttribute('disabled', 'disabled')
 
-    const message = document.querySelector('input').value
+    // const message = document.querySelector('input').value
+    const message = e.target.elements.message.value
 
     socket.emit('sendMessage', message, (error) => {
         $messageFormButton.removeAttribute('disabled')
@@ -46,7 +46,7 @@ $messageFormButton.setAttribute('disabled', 'disabled')
             return console.log(error)
         }
 
-        console.log('The message has been delivered!')
+        console.log('Message delivered!')
     })
 })
 
@@ -61,11 +61,9 @@ $sendLocationButton.addEventListener('click', () => {
         socket.emit('sendLocation', {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
-
         }, () => {
             $sendLocationButton.removeAttribute('disabled')
-            
-            console.log('Location shared!')
+            console.log('Location shared!')  
         })
     })
 })
